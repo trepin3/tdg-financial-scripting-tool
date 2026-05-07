@@ -54,7 +54,7 @@ body {
   color: var(--text);
   min-height: 100vh;
   min-height: 100dvh;
-  padding-bottom: 100px;
+  padding-bottom: 60px;
   transition: background 0.3s, color 0.3s;
 }
 
@@ -153,49 +153,7 @@ body.on-welcome .secondary-nav { display: none; }
 .dyn-field input:focus { border-color: var(--primary); }
 .dyn-field input.has-value { border-color: var(--primary); color: var(--primary); }
 
-/* PROGRESS BAR */
-.progress-container {
-  display: flex;
-  gap: 4px;
-  align-items: center;
-}
-
-.progress-segment {
-  flex: 1;
-  height: 4px;
-  border-radius: 2px;
-  background: var(--border);
-  transition: background 0.4s ease;
-  position: relative;
-  cursor: pointer;
-}
-.progress-segment.active { background: var(--primary); }
-.progress-segment.completed { background: var(--success); }
-
-.stage-labels {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 4px;
-  padding: 0 2px;
-}
-
-.stage-label {
-  font-size: 8px;
-  color: var(--text-secondary);
-  text-align: center;
-  flex: 1;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  font-weight: 600;
-  opacity: 0.7;
-  transition: opacity 0.3s, color 0.3s;
-  cursor: pointer;
-  padding: 4px 0;
-  -webkit-tap-highlight-color: transparent;
-}
-.stage-label:active { opacity: 1; }
-.stage-label.active { opacity: 1; color: var(--primary); }
-.stage-label.completed { opacity: 0.9; color: var(--success); }
+/* (progress bar removed in single-page layout) */
 
 /* MAIN CONTENT */
 .main-content {
@@ -204,17 +162,55 @@ body.on-welcome .secondary-nav { display: none; }
   margin: 0 auto;
 }
 
-/* SECTIONS */
+/* SECTIONS — single page layout, all sections visible after welcome */
 .script-section {
-  display: none;
-  animation: fadeIn 0.35s ease;
+  display: block;
+  margin-bottom: 24px;
+  scroll-margin-top: 180px;
 }
-.script-section.active { display: block; }
+#welcome.script-section { margin-bottom: 0; }
+body.on-welcome .script-section:not(#welcome) { display: none; }
+body:not(.on-welcome) #welcome { display: none; }
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* JUMP NAV (replaces progress bar) */
+.jump-nav {
+  position: sticky;
+  top: 175px;
+  z-index: 85;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 12px;
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.jump-nav::-webkit-scrollbar { display: none; }
+body.on-welcome .jump-nav { display: none; }
+
+.jump-chip {
+  flex-shrink: 0;
+  padding: 6px 12px;
+  border-radius: 16px;
+  border: 1.5px solid var(--border);
+  background: var(--input-bg);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  transition: all 0.15s;
+  text-decoration: none;
+  display: inline-block;
+}
+.jump-chip:hover { color: var(--primary); border-color: var(--primary); }
+.jump-chip:active { transform: scale(0.95); }
 
 /* CARDS */
 .card {
@@ -499,23 +495,7 @@ body.on-welcome .secondary-nav { display: none; }
   margin-top: 8px;
 }
 
-/* BOTTOM NAV */
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: var(--card);
-  border-top: 1px solid var(--border);
-  padding: 12px 16px;
-  padding-bottom: max(12px, env(safe-area-inset-bottom));
-  display: flex;
-  gap: 10px;
-  z-index: 100;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-}
-
+/* nav-btn used on welcome and after-sale buttons */
 .nav-btn {
   flex: 1;
   padding: 14px;
@@ -528,23 +508,9 @@ body.on-welcome .secondary-nav { display: none; }
   letter-spacing: -0.2px;
 }
 .nav-btn:active { transform: scale(0.97); }
-
-.nav-btn.secondary {
-  background: var(--input-bg);
-  color: var(--text);
-}
-
-.nav-btn.primary {
-  background: var(--primary);
-  color: white;
-}
+.nav-btn.secondary { background: var(--input-bg); color: var(--text); }
+.nav-btn.primary { background: var(--primary); color: white; }
 .nav-btn.primary:active { background: var(--primary-dark); }
-
-.nav-btn:disabled {
-  opacity: 0.4;
-  cursor: default;
-  transform: none;
-}
 
 /* SECTION TITLE */
 .section-title {
@@ -716,16 +682,14 @@ body.on-welcome .bottom-nav { display: none; }
 <div class="top-bar" id="topBar">
   <div class="top-bar-row">
     <div>
-      <h1 id="currentStageTitle">Greet</h1>
-      <div id="scriptTypeBadge" style="font-size:10px;color:var(--text-secondary);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-top:1px;">TDG Financial &mdash; Final Expense</div>
+      <h1>TDG Financial</h1>
+      <div style="font-size:10px;color:var(--text-secondary);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-top:1px;">Final Expense Script</div>
     </div>
     <div class="top-bar-actions">
       <button class="icon-btn" onclick="toggleTheme()" title="Dark Mode">&#127769;</button>
       <button class="icon-btn" onclick="resetCall()" title="New Call">&#8635;</button>
     </div>
   </div>
-  <div class="progress-container" id="progressBar"></div>
-  <div class="stage-labels" id="stageLabels"></div>
 </div>
 
 <!-- SECONDARY NAV -->
@@ -742,6 +706,19 @@ body.on-welcome .bottom-nav { display: none; }
     <span class="dyn-field-label">Nickname</span>
     <input type="text" id="dynNickname" placeholder="optional" oninput="setDynField('nickname', this.value)" autocomplete="off">
   </div>
+</div>
+
+<!-- JUMP NAV -->
+<div class="jump-nav" id="jumpNav">
+  <a class="jump-chip" href="#sec-greet">Greet</a>
+  <a class="jump-chip" href="#sec-concern">Concern</a>
+  <a class="jump-chip" href="#sec-story">Story</a>
+  <a class="jump-chip" href="#sec-urgency">Urgency</a>
+  <a class="jump-chip" href="#sec-burial">Burial</a>
+  <a class="jump-chip" href="#sec-license">License</a>
+  <a class="jump-chip" href="#sec-options">Options</a>
+  <a class="jump-chip" href="#sec-close">Close</a>
+  <a class="jump-chip" href="#sec-after">After</a>
 </div>
 
 <!-- MAIN CONTENT -->
@@ -1281,29 +1258,10 @@ body.on-welcome .bottom-nav { display: none; }
 
 </div>
 
-<!-- BOTTOM NAV -->
-<div class="bottom-nav">
-  <button class="nav-btn secondary" id="prevBtn" onclick="prevSection()">&larr; Back</button>
-  <button class="nav-btn primary" id="nextBtn" onclick="nextSection()">Next &rarr;</button>
-</div>
-
 <script>
 // ============================================================
 // STATE
 // ============================================================
-const STAGES = [
-  { id: 'sec-greet',   title: 'Greet',       label: 'Greet' },
-  { id: 'sec-concern', title: 'Concern',     label: 'Concern' },
-  { id: 'sec-story',   title: 'Story',       label: 'Story' },
-  { id: 'sec-urgency', title: 'Urgency',     label: 'Urgency' },
-  { id: 'sec-burial',  title: 'Burial',      label: 'Burial' },
-  { id: 'sec-license', title: 'License',     label: 'License' },
-  { id: 'sec-options', title: 'Options',     label: 'Options' },
-  { id: 'sec-close',   title: 'Close',       label: 'Close' },
-  { id: 'sec-after',   title: 'After Sale',  label: 'After' }
-];
-
-let currentStage = -1;
 let dynData = {
   prospect: 'Prospect',
   nickname: '',
@@ -1329,7 +1287,6 @@ let selectedOption = 0;
 // INIT
 // ============================================================
 function init() {
-  buildProgressBar();
   loadTheme();
   updateAllDynFields();
   document.getElementById('welcomeProspectName').addEventListener('keydown', (e) => {
@@ -1340,27 +1297,6 @@ function init() {
   });
   document.getElementById('welcomeAgentLicense').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') startCall();
-  });
-}
-
-function buildProgressBar() {
-  const bar = document.getElementById('progressBar');
-  const labels = document.getElementById('stageLabels');
-  bar.innerHTML = '';
-  labels.innerHTML = '';
-  STAGES.forEach((s, i) => {
-    const seg = document.createElement('div');
-    seg.className = 'progress-segment';
-    seg.id = 'prog-' + i;
-    seg.onclick = () => { goToStage(i); };
-    bar.appendChild(seg);
-
-    const lbl = document.createElement('div');
-    lbl.className = 'stage-label';
-    lbl.textContent = s.label;
-    lbl.onclick = () => { goToStage(i); };
-    lbl.id = 'lbl-' + i;
-    labels.appendChild(lbl);
   });
 }
 
@@ -1380,42 +1316,11 @@ function startCall() {
 
   updateAllDynFields();
   document.body.classList.remove('on-welcome');
-  document.getElementById('welcome').classList.remove('active');
-  goToStage(0);
-}
-
-function goToStage(index) {
-  document.querySelectorAll('.script-section').forEach(s => s.classList.remove('active'));
-  currentStage = index;
-  document.getElementById(STAGES[index].id).classList.add('active');
-  document.getElementById('currentStageTitle').textContent = STAGES[index].title;
-
-  STAGES.forEach((s, i) => {
-    const seg = document.getElementById('prog-' + i);
-    const lbl = document.getElementById('lbl-' + i);
-    seg.className = 'progress-segment';
-    lbl.className = 'stage-label';
-    if (i < currentStage) {
-      seg.classList.add('completed');
-      lbl.classList.add('completed');
-    } else if (i === currentStage) {
-      seg.classList.add('active');
-      lbl.classList.add('active');
-    }
-  });
-
-  document.getElementById('prevBtn').disabled = currentStage === 0;
-  const nextBtn = document.getElementById('nextBtn');
-  nextBtn.style.display = currentStage === STAGES.length - 1 ? 'none' : '';
-
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function nextSection() { if (currentStage < STAGES.length - 1) goToStage(currentStage + 1); }
-function prevSection() { if (currentStage > 0) goToStage(currentStage - 1); }
-
 function resetCall() {
-  if (currentStage >= 0 && !confirm('Start a new call? Current progress will be cleared.')) return;
+  if (!document.body.classList.contains('on-welcome') && !confirm('Start a new call? Current call data will be cleared.')) return;
   dynData = {
     prospect: 'Prospect',
     nickname: '',
@@ -1436,11 +1341,9 @@ function resetCall() {
   storyBranch = '';
   burialChoice = '';
   selectedOption = 0;
-  currentStage = -1;
 
-  document.querySelectorAll('.script-section').forEach(s => s.classList.remove('active'));
-  document.getElementById('welcome').classList.add('active');
   document.body.classList.add('on-welcome');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 
   ['welcomeProspectName','welcomeAgentName','welcomeAgentLicense','dynBeneficiary','dynHobby','dynNickname','storyName','optCompany','opt1Coverage','opt1Premium','opt2Coverage','opt2Premium','opt3Coverage','opt3Premium'].forEach(id => {
     const el = document.getElementById(id);
