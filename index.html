@@ -108,7 +108,7 @@ body {
 /* SECONDARY NAV (DYNAMIC FIELDS) */
 .secondary-nav {
   position: sticky;
-  top: 92px;
+  top: 124px;
   z-index: 90;
   background: var(--card);
   border-bottom: 1px solid var(--border);
@@ -177,40 +177,52 @@ body:not(.on-welcome) #welcome { display: none; }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* JUMP NAV (replaces progress bar) */
-.jump-nav {
-  position: sticky;
-  top: 175px;
-  z-index: 85;
-  background: var(--card);
-  border-bottom: 1px solid var(--border);
-  padding: 8px 12px;
+/* PROGRESS BAR (Keps-style) — lives inside the top-bar */
+.progress-container {
   display: flex;
-  gap: 6px;
-  overflow-x: auto;
-  scrollbar-width: none;
+  gap: 4px;
+  align-items: center;
 }
-.jump-nav::-webkit-scrollbar { display: none; }
-body.on-welcome .jump-nav { display: none; }
 
-.jump-chip {
-  flex-shrink: 0;
-  padding: 6px 12px;
-  border-radius: 16px;
-  border: 1.5px solid var(--border);
-  background: var(--input-bg);
-  color: var(--text-secondary);
-  font-size: 12px;
-  font-weight: 700;
+.progress-segment {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+  transition: background 0.4s ease;
+  position: relative;
   cursor: pointer;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-  transition: all 0.15s;
-  text-decoration: none;
-  display: inline-block;
 }
-.jump-chip:hover { color: var(--primary); border-color: var(--primary); }
-.jump-chip:active { transform: scale(0.95); }
+.progress-segment.active { background: var(--primary); }
+.progress-segment.completed { background: var(--success); }
+
+.stage-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+  padding: 0 2px;
+}
+
+.stage-label {
+  font-size: 8px;
+  color: var(--text-secondary);
+  text-align: center;
+  flex: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  font-weight: 600;
+  opacity: 0.7;
+  transition: opacity 0.3s, color 0.3s;
+  cursor: pointer;
+  padding: 4px 0;
+  -webkit-tap-highlight-color: transparent;
+}
+.stage-label:active { opacity: 1; }
+.stage-label.active { opacity: 1; color: var(--primary); }
+.stage-label.completed { opacity: 0.9; color: var(--success); }
+
+body.on-welcome .progress-container,
+body.on-welcome .stage-labels { display: none; }
 
 /* CARDS */
 .card {
@@ -690,6 +702,8 @@ body.on-welcome .bottom-nav { display: none; }
       <button class="icon-btn" onclick="resetCall()" title="New Call">&#8635;</button>
     </div>
   </div>
+  <div class="progress-container" id="progressBar"></div>
+  <div class="stage-labels" id="stageLabels"></div>
 </div>
 
 <!-- SECONDARY NAV -->
@@ -706,19 +720,6 @@ body.on-welcome .bottom-nav { display: none; }
     <span class="dyn-field-label">Nickname</span>
     <input type="text" id="dynNickname" placeholder="optional" oninput="setDynField('nickname', this.value)" autocomplete="off">
   </div>
-</div>
-
-<!-- JUMP NAV -->
-<div class="jump-nav" id="jumpNav">
-  <a class="jump-chip" href="#sec-greet">Greet</a>
-  <a class="jump-chip" href="#sec-concern">Concern</a>
-  <a class="jump-chip" href="#sec-story">Story</a>
-  <a class="jump-chip" href="#sec-urgency">Urgency</a>
-  <a class="jump-chip" href="#sec-burial">Burial</a>
-  <a class="jump-chip" href="#sec-license">License</a>
-  <a class="jump-chip" href="#sec-options">Options</a>
-  <a class="jump-chip" href="#sec-close">Close</a>
-  <a class="jump-chip" href="#sec-after">After</a>
 </div>
 
 <!-- MAIN CONTENT -->
@@ -1262,6 +1263,18 @@ body.on-welcome .bottom-nav { display: none; }
 // ============================================================
 // STATE
 // ============================================================
+const STAGES = [
+  { id: 'sec-greet',   label: 'Greet' },
+  { id: 'sec-concern', label: 'Concern' },
+  { id: 'sec-story',   label: 'Story' },
+  { id: 'sec-urgency', label: 'Urgency' },
+  { id: 'sec-burial',  label: 'Burial' },
+  { id: 'sec-license', label: 'License' },
+  { id: 'sec-options', label: 'Options' },
+  { id: 'sec-close',   label: 'Close' },
+  { id: 'sec-after',   label: 'After' }
+];
+
 let dynData = {
   prospect: 'Prospect',
   nickname: '',
@@ -1288,7 +1301,9 @@ let selectedOption = 0;
 // ============================================================
 function init() {
   loadTheme();
+  buildProgressBar();
   updateAllDynFields();
+  window.addEventListener('scroll', updateActiveStage, { passive: true });
   document.getElementById('welcomeProspectName').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') document.getElementById('welcomeAgentName').focus();
   });
@@ -1297,6 +1312,63 @@ function init() {
   });
   document.getElementById('welcomeAgentLicense').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') startCall();
+  });
+}
+
+// ============================================================
+// PROGRESS BAR
+// ============================================================
+function buildProgressBar() {
+  const bar = document.getElementById('progressBar');
+  const labels = document.getElementById('stageLabels');
+  bar.innerHTML = '';
+  labels.innerHTML = '';
+  STAGES.forEach((s, i) => {
+    const seg = document.createElement('div');
+    seg.className = 'progress-segment';
+    seg.id = 'prog-' + i;
+    seg.onclick = () => jumpToStage(s.id);
+    bar.appendChild(seg);
+
+    const lbl = document.createElement('div');
+    lbl.className = 'stage-label';
+    lbl.textContent = s.label;
+    lbl.id = 'lbl-' + i;
+    lbl.onclick = () => jumpToStage(s.id);
+    labels.appendChild(lbl);
+  });
+}
+
+function jumpToStage(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function updateActiveStage() {
+  if (document.body.classList.contains('on-welcome')) return;
+  const threshold = 200;
+  let activeIdx = 0;
+  for (let i = 0; i < STAGES.length; i++) {
+    const el = document.getElementById(STAGES[i].id);
+    if (!el) continue;
+    if (el.getBoundingClientRect().top <= threshold) {
+      activeIdx = i;
+    }
+  }
+  STAGES.forEach((s, i) => {
+    const seg = document.getElementById('prog-' + i);
+    const lbl = document.getElementById('lbl-' + i);
+    if (!seg || !lbl) return;
+    seg.className = 'progress-segment';
+    lbl.className = 'stage-label';
+    if (i < activeIdx) {
+      seg.classList.add('completed');
+      lbl.classList.add('completed');
+    } else if (i === activeIdx) {
+      seg.classList.add('active');
+      lbl.classList.add('active');
+    }
   });
 }
 
@@ -1317,6 +1389,7 @@ function startCall() {
   updateAllDynFields();
   document.body.classList.remove('on-welcome');
   window.scrollTo({ top: 0, behavior: 'smooth' });
+  setTimeout(updateActiveStage, 400);
 }
 
 function resetCall() {
