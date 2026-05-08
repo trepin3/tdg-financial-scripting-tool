@@ -727,7 +727,6 @@ body.on-welcome .bottom-nav { display: none; }
       <p>Final Expense scripting tool. Fill in the prospect's name, your name and license, then start the call.</p>
       <div class="welcome-fields">
         <input type="text" id="welcomeProspectName" placeholder="Prospect's First Name" autocomplete="off">
-        <input type="text" id="welcomeAgentName" placeholder="Your Name (Agent)" autocomplete="off">
         <input type="text" id="welcomeAgentLicense" placeholder="State License Number" autocomplete="off">
       </div>
       <button class="start-btn" onclick="startCall()">Start Call</button>
@@ -753,7 +752,7 @@ body.on-welcome .bottom-nav { display: none; }
     <div class="card">
       <div class="card-header">Follow Up On Their Request</div>
       <div class="script-text">
-        Hey <span class="dyn" data-dyn="prospect">Prospect</span>, this is <span class="dyn" data-dyn="agent">Agent</span>. I know you got my contact information already, and I just wanted to follow up on the request that you had submitted, about life insurance.
+        Hey <span class="dyn" data-dyn="prospect">Prospect</span>, this is _____. I know you got my contact information already, and I just wanted to follow up on the request that you had submitted, about life insurance.
       </div>
     </div>
 
@@ -762,7 +761,7 @@ body.on-welcome .bottom-nav { display: none; }
       <div class="script-text">
         Now, <span class="dyn" data-dyn="prospect">Prospect</span>, you go by <span class="dyn" data-dyn="prospectOrNick">Prospect</span>?
         <br><br>
-        Okay, great. I love to call people by what they go by. I'm <span class="dyn" data-dyn="agent">Agent</span> with an AR, so Lord knows my name gets chewed up eight ways to Sunday.
+        Okay, great. I love to call people by what they go by. I'm _____ with an AR, so Lord knows my name gets chewed up eight ways to Sunday.
       </div>
       <div class="coaching-tip">If they have a nickname, type it into the Nickname field at the top so the rest of the script uses it. Otherwise the script keeps using their first name.</div>
     </div>
@@ -1017,13 +1016,11 @@ body.on-welcome .bottom-nav { display: none; }
       <div class="script-text">
         Now, <span class="dyn" data-dyn="prospectOrNick">Prospect</span>, I want to make sure you have my state license number and the plan to take care of this written down. Can you get a pen and paper really quick?
         <br><br>
-        Perfect, my name is <span class="dyn" data-dyn="agent">Agent</span> and my state license number is <span class="dyn" data-dyn="agentLicense">License</span>.
+        Perfect, my name is _____ and my state license number is <span class="dyn" data-dyn="agentLicense">License</span>.
       </div>
     </div>
 
     <div class="agent-card-display">
-      <div class="label">Agent</div>
-      <div class="value" id="agentCardName">Your Name</div>
       <div class="label">State License Number</div>
       <div class="value" id="agentCardLicense">000000</div>
     </div>
@@ -1285,7 +1282,6 @@ let dynData = {
   nickname: '',
   hobby: 'Hobby',
   beneficiary: 'Beneficiary',
-  agent: 'Agent',
   agentLicense: 'License',
   storyName: 'that person',
   storyGender: 'man',
@@ -1310,9 +1306,6 @@ function init() {
   updateAllDynFields();
   window.addEventListener('scroll', updateActiveStage, { passive: true });
   document.getElementById('welcomeProspectName').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') document.getElementById('welcomeAgentName').focus();
-  });
-  document.getElementById('welcomeAgentName').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') document.getElementById('welcomeAgentLicense').focus();
   });
   document.getElementById('welcomeAgentLicense').addEventListener('keydown', (e) => {
@@ -1382,13 +1375,10 @@ function updateActiveStage() {
 // ============================================================
 function startCall() {
   const name = document.getElementById('welcomeProspectName').value.trim() || 'Prospect';
-  const agent = document.getElementById('welcomeAgentName').value.trim() || 'Agent';
   const license = document.getElementById('welcomeAgentLicense').value.trim() || 'License';
 
   dynData.prospect = name;
-  dynData.agent = agent;
   dynData.agentLicense = license;
-  document.getElementById('agentCardName').textContent = agent;
   document.getElementById('agentCardLicense').textContent = license;
 
   updateAllDynFields();
@@ -1404,7 +1394,6 @@ function resetCall() {
     nickname: '',
     hobby: 'Hobby',
     beneficiary: 'Beneficiary',
-    agent: 'Agent',
     agentLicense: 'License',
     storyName: 'that person',
     storyGender: 'man',
@@ -1423,7 +1412,7 @@ function resetCall() {
   document.body.classList.add('on-welcome');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  ['welcomeProspectName','welcomeAgentName','welcomeAgentLicense','dynBeneficiary','dynHobby','dynNickname','storyName','optCompany','opt1Coverage','opt1Premium','opt2Coverage','opt2Premium','opt3Coverage','opt3Premium'].forEach(id => {
+  ['welcomeProspectName','welcomeAgentLicense','dynBeneficiary','dynHobby','dynNickname','storyName','optCompany','opt1Coverage','opt1Premium','opt2Coverage','opt2Premium','opt3Coverage','opt3Premium'].forEach(id => {
     const el = document.getElementById(id);
     if (el) { el.value = ''; el.classList.remove('has-value'); }
   });
@@ -1516,7 +1505,6 @@ const DYN_DEFAULTS = {
   prospectOrNick: 'Prospect',
   hobby: 'Hobby',
   beneficiary: 'Beneficiary',
-  agent: 'Agent',
   agentLicense: 'License',
   storyName: 'that person',
   storyPronounSubj: 'he',
