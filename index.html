@@ -980,7 +980,28 @@ body.on-welcome .bottom-nav { display: none; }
       <div class="script-text">
         Do you know what that costs as of today?
       </div>
-      <div class="direction mt-8"><em>(Wait for their response.)</em></div>
+
+      <div id="bc-cost-default" class="direction mt-8"><em>(Wait for their response, then anchor high.)</em>
+        <div class="script-text mt-12">
+          Most people are shocked. The national average for a funeral right now is between $10,000 and $20,000. And that number goes up every year.
+        </div>
+      </div>
+
+      <div id="bc-cost-cremation" style="display:none;margin-top:8px;">
+        <div class="card-header" style="font-size:12px;margin-bottom:4px;">Cremation Selected</div>
+        <div class="script-text">
+          Even with cremation, people are paying between $3,000 and $9,000 once you factor in the urn, memorial service, and everything the family wants to do. It adds up fast.
+        </div>
+      </div>
+
+      <div id="bc-cost-burial" style="display:none;margin-top:8px;">
+        <div class="card-header" style="font-size:12px;margin-bottom:4px;">Burial Selected</div>
+        <div class="script-text">
+          With a burial, you're looking at $12,000 to $20,000 minimum. The plot, the casket, the headstone, the service, transportation. Most families don't realize how fast it adds up.
+        </div>
+      </div>
+
+      <div class="coaching-tip">Anchor the high number first. When your quote comes in at $30 to $80 a month later, it feels tiny by comparison.</div>
     </div>
 
     <div class="card">
@@ -1117,7 +1138,7 @@ body.on-welcome .bottom-nav { display: none; }
         </label>
       </div>
       <div class="option-script">
-        Now below that, at the top of the list, I have <span class="dyn" data-dyn="opt1Coverage">$ amount</span>, and that's going to be for <span class="dyn" data-dyn="opt1Premium">$ premium</span>. Now that <span class="dyn" data-dyn="opt1Coverage">$ amount</span>, that's going to make sure the cremation/burial is taken care of easily, and you're going to have plenty left over to make sure you have a little bit for <span class="dyn" data-dyn="beneficiary">Beneficiary</span>. Maybe put into a fund for them or just to have a gift for them to put away, so there's plenty for that. That's the <span class="dyn" data-dyn="opt1Coverage">$ amount</span>.
+        Now below that, at the top of the list, I have <span class="dyn" data-dyn="opt1Coverage">$ amount</span>, and that's going to be for <span class="dyn" data-dyn="opt1Premium">$ premium</span>. Now that <span class="dyn" data-dyn="opt1Coverage">$ amount</span>, that's going to make sure the <span class="dyn" data-dyn="bc">burial/cremation</span> is taken care of easily, and you're going to have plenty left over to make sure you have a little bit for <span class="dyn" data-dyn="beneficiary">Beneficiary</span>. Maybe put into a fund for them or just to have a gift for them to put away, so there's plenty for that. That's the <span class="dyn" data-dyn="opt1Coverage">$ amount</span>.
       </div>
     </div>
 
@@ -1135,7 +1156,7 @@ body.on-welcome .bottom-nav { display: none; }
         </label>
       </div>
       <div class="option-script">
-        In the middle, we've got <span class="dyn" data-dyn="opt2Coverage">$ amount</span>. So, same, same, you know. You're gonna have a good bit of money left over after that burial/cremation. This takes care of that, no problem. Even if there are other surprise expenses that pop up, still going to take care of that burial/cremation. Not a whole lot of money left over for <span class="dyn" data-dyn="beneficiary">Beneficiary</span> like you wanted, but if that's comfortable for you, it's going to be <span class="dyn" data-dyn="opt2Premium">$ premium</span> for that.
+        In the middle, we've got <span class="dyn" data-dyn="opt2Coverage">$ amount</span>. So, same, same, you know. You're gonna have a good bit of money left over after that <span class="dyn" data-dyn="bc">burial/cremation</span>. This takes care of that, no problem. Even if there are other surprise expenses that pop up, still going to take care of that <span class="dyn" data-dyn="bc">burial/cremation</span>. Not a whole lot of money left over for <span class="dyn" data-dyn="beneficiary">Beneficiary</span> like you wanted, but if that's comfortable for you, it's going to be <span class="dyn" data-dyn="opt2Premium">$ premium</span> for that.
       </div>
     </div>
 
@@ -1153,7 +1174,7 @@ body.on-welcome .bottom-nav { display: none; }
         </label>
       </div>
       <div class="option-script">
-        And then, last but not least, we've got <span class="dyn" data-dyn="opt3Coverage">$ amount</span>. So, cutting a little close here. Still, there should be enough money there for the burial/cremation. Now, if there's some unexpected expenses that pop up, things might get a little tight there. I'm not sure there'll be anything left over for <span class="dyn" data-dyn="beneficiary">Beneficiary</span>, but if you just want to make sure the cremation is taken care of, pretty good chance this is going to take care of that. So that's going to be <span class="dyn" data-dyn="opt3Premium">$ premium</span>.
+        And then, last but not least, we've got <span class="dyn" data-dyn="opt3Coverage">$ amount</span>. So, cutting a little close here. Still, there should be enough money there for the <span class="dyn" data-dyn="bc">burial/cremation</span>. Now, if there's some unexpected expenses that pop up, things might get a little tight there. I'm not sure there'll be anything left over for <span class="dyn" data-dyn="beneficiary">Beneficiary</span>, but if you just want to make sure the <span class="dyn" data-dyn="bc">burial/cremation</span> is taken care of, pretty good chance this is going to take care of that. So that's going to be <span class="dyn" data-dyn="opt3Premium">$ premium</span>.
       </div>
     </div>
 
@@ -1421,6 +1442,9 @@ function resetCall() {
   document.querySelectorAll('.coverage-toggle').forEach(b => b.classList.remove('active'));
   document.getElementById('story-branch-without').style.display = 'none';
   document.getElementById('story-branch-with').style.display = 'none';
+  document.getElementById('bc-cost-default').style.display = '';
+  document.getElementById('bc-cost-cremation').style.display = 'none';
+  document.getElementById('bc-cost-burial').style.display = 'none';
   document.getElementById('storyGenderMan').classList.add('active');
   document.getElementById('storyGenderWoman').classList.remove('active');
   document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
@@ -1463,6 +1487,10 @@ function setBurialChoice(choice) {
   burialChoice = choice;
   document.getElementById('bc-btn-burial').classList.toggle('active', choice === 'burial');
   document.getElementById('bc-btn-cremation').classList.toggle('active', choice === 'cremation');
+  document.getElementById('bc-cost-default').style.display = choice ? 'none' : '';
+  document.getElementById('bc-cost-cremation').style.display = choice === 'cremation' ? 'block' : 'none';
+  document.getElementById('bc-cost-burial').style.display = choice === 'burial' ? 'block' : 'none';
+  updateAllDynFields();
 }
 
 function selectOption(num) {
@@ -1473,7 +1501,6 @@ function selectOption(num) {
 }
 
 function resolveDyn(key) {
-  // Smart resolution for the key prospectOrNick
   if (key === 'prospectOrNick') {
     return dynData.nickname && dynData.nickname.trim() ? dynData.nickname : (dynData.prospect || 'Prospect');
   }
@@ -1485,6 +1512,11 @@ function resolveDyn(key) {
   }
   if (key === 'storyGenderPlural') {
     return dynData.storyGender === 'woman' ? 'women' : 'men';
+  }
+  if (key === 'bc') {
+    if (burialChoice === 'burial') return 'burial';
+    if (burialChoice === 'cremation') return 'cremation';
+    return 'burial/cremation';
   }
   return dynData[key];
 }
@@ -1501,6 +1533,7 @@ const DYN_DEFAULTS = {
   storyGenderWord: 'man',
   storyGenderPlural: 'men',
   company: 'Carrier',
+  bc: 'burial/cremation',
   opt1Coverage: '$ amount',
   opt1Premium: '$ premium',
   opt2Coverage: '$ amount',
