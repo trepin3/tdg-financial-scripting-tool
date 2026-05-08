@@ -105,14 +105,10 @@ body {
 }
 .icon-btn:active { transform: scale(0.9); }
 
-/* SECONDARY NAV (DYNAMIC FIELDS) */
+/* DYNAMIC FIELDS ROW (lives inside the top-bar) */
 .secondary-nav {
-  position: sticky;
-  top: 124px;
-  z-index: 90;
-  background: var(--card);
-  border-bottom: 1px solid var(--border);
-  padding: 10px 12px;
+  margin-top: 10px;
+  padding: 0;
   display: flex;
   gap: 8px;
   flex-wrap: nowrap;
@@ -704,21 +700,19 @@ body.on-welcome .bottom-nav { display: none; }
   </div>
   <div class="progress-container" id="progressBar"></div>
   <div class="stage-labels" id="stageLabels"></div>
-</div>
-
-<!-- SECONDARY NAV -->
-<div class="secondary-nav" id="secondaryNav">
-  <div class="dyn-field">
-    <span class="dyn-field-label">Beneficiary</span>
-    <input type="text" id="dynBeneficiary" placeholder="e.g. Sarah" oninput="setDynField('beneficiary', this.value)" autocomplete="off">
-  </div>
-  <div class="dyn-field">
-    <span class="dyn-field-label">Hobby</span>
-    <input type="text" id="dynHobby" placeholder="e.g. fishing" oninput="setDynField('hobby', this.value)" autocomplete="off">
-  </div>
-  <div class="dyn-field">
-    <span class="dyn-field-label">Nickname</span>
-    <input type="text" id="dynNickname" placeholder="optional" oninput="setDynField('nickname', this.value)" autocomplete="off">
+  <div class="secondary-nav" id="secondaryNav">
+    <div class="dyn-field">
+      <span class="dyn-field-label">Beneficiary</span>
+      <input type="text" id="dynBeneficiary" placeholder="e.g. Sarah" oninput="setDynField('beneficiary', this.value)" autocomplete="off">
+    </div>
+    <div class="dyn-field">
+      <span class="dyn-field-label">Hobby</span>
+      <input type="text" id="dynHobby" placeholder="e.g. fishing" oninput="setDynField('hobby', this.value)" autocomplete="off">
+    </div>
+    <div class="dyn-field">
+      <span class="dyn-field-label">Nickname</span>
+      <input type="text" id="dynNickname" placeholder="optional" oninput="setDynField('nickname', this.value)" autocomplete="off">
+    </div>
   </div>
 </div>
 
